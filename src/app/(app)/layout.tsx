@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
 import './globals.css';
+import { AppContextProvider } from '@/context/youtubeContext';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
 
@@ -14,8 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={roboto.className}>{children}</body>
-    </html>
+    <AppContextProvider>
+      <html lang="pt-BR">
+        <body className={roboto.className}>{children}</body>
+      </html>
+    </AppContextProvider>
   );
 }
