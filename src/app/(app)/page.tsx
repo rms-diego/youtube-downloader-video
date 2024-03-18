@@ -14,7 +14,7 @@ export default function Home() {
           <Form />
         </section>
 
-        <EmbedYoutube />
+        <EmbedYoutube className="self-center" />
       </section>
     </main>
   );
