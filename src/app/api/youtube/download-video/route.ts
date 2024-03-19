@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import ytdl from 'ytdl-core';
 
@@ -5,7 +6,6 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
   const youtubeVideoId = searchParams.get('youtubeVideoId');
-  const videoQuality = searchParams.get('videoQuality');
 
   if (!youtubeVideoId) {
     const errorResponse = JSON.stringify({
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   const videoBuffer = Buffer.concat(chunks);
 
   const headers = {
-    'Content-Disposition': `attachment; filename="video.mp4"`,
+    'Content-Disposition': `attachment; filename="${randomUUID()}.mp4"`,
     'Content-Type': 'video/mp4',
   };
 
