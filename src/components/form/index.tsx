@@ -16,13 +16,23 @@ export function Form() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (!youtubeUrl.includes('https://www.youtube.com/watch?v=')) {
+      setYoutubeUrl('');
+      return alert('Url que foi inserida é invalida');
+    }
+
     if (!youtubeUrl) {
       handleSetYoutubeVideoId('');
-      return alert('COLOCA A URL ANIMAL');
+      return alert('Por favor coloque o link do video');
     }
 
     const youtubeVideoId = handleSetYoutubeVideoId(youtubeUrl);
-    await downloadYoutubeVideo(youtubeVideoId);
+    const errorMessage = await downloadYoutubeVideo(youtubeVideoId);
+
+    if (errorMessage) {
+      return alert(errorMessage);
+    }
+
     setYoutubeUrl('');
   }
 
