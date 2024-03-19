@@ -1,6 +1,7 @@
 'use client';
 import { useAppContext } from '@/context/youtubeContext';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { downloadYoutubeVideo } from '@/services/fetchApi';
 
 export function Form() {
   const [youtubeUrl, setYoutubeUrl] = useState<string>('');
@@ -12,7 +13,7 @@ export function Form() {
     setYoutubeUrl(value);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!youtubeUrl) {
@@ -20,8 +21,8 @@ export function Form() {
       return alert('COLOCA A URL ANIMAL');
     }
 
-    handleSetYoutubeVideoId(youtubeUrl);
-
+    const youtubeVideoId = handleSetYoutubeVideoId(youtubeUrl);
+    await downloadYoutubeVideo(youtubeVideoId);
     setYoutubeUrl('');
   }
 

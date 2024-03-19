@@ -4,11 +4,11 @@ import { ReactNode, createContext, useContext, useState } from 'react';
 
 type TypeAppContext = {
   youtubeVideoId: string;
-  handleSetYoutubeVideoId: (youtubeUrl: string) => void;
+  handleSetYoutubeVideoId: (youtubeUrl: string) => string;
 };
 
 const AppContext = createContext<TypeAppContext>({
-  handleSetYoutubeVideoId: (youtubeUrl: string) => {},
+  handleSetYoutubeVideoId: (youtubeUrl: string) => '',
   youtubeVideoId: '',
 });
 
@@ -19,7 +19,7 @@ export function AppContextProvider({ children }: { children: ReactNode }) {
     const videoId = youtubeUrl.split('v=').at(1)!;
 
     setYoutubeVideoId(videoId);
-    return;
+    return videoId;
   }
 
   const contextValue = {
