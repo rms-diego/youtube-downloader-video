@@ -3,10 +3,15 @@ import { useAppContext } from '@/context/youtubeContext';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { downloadYoutubeVideo } from '@/services/fetchApi';
 import { Spinner } from '../spinner';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { Button } from '../ui/button';
 
 export function Form() {
   const [youtubeUrl, setYoutubeUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [errorMessageAlert, setErrorMessageAlert] = useState<string>('');
   const { handleSetYoutubeVideoId } = useAppContext();
 
   function handleYoutubeUrl({ target }: ChangeEvent<HTMLInputElement>) {
@@ -19,15 +24,18 @@ export function Form() {
     event.preventDefault();
     setIsLoading((prevState) => !prevState);
 
+    if (!youtubeUrl) {
+      setIsLoading((prevState) => !prevState);
+      handleSetYoutubeVideoId('');
+      setErrorMessageAlert('Insira a url para fazer a pesquisa');
+      return setShowAlert((prevState) => !prevState);
+    }
+
     if (!youtubeUrl.includes('https://www.youtube.com/watch?v=')) {
       setYoutubeUrl('');
       setIsLoading((prevState) => !prevState);
-      return alert('Url que foi inserida é invalida');
-    }
-
-    if (!youtubeUrl) {
-      handleSetYoutubeVideoId('');
-      return alert('Por favor coloque o link do video');
+      setErrorMessageAlert('Url digitada invalida');
+      return setShowAlert((prevState) => !prevState);
     }
 
     const youtubeVideoId = handleSetYoutubeVideoId(youtubeUrl);
@@ -35,15 +43,34 @@ export function Form() {
 
     if (errorMessage) {
       setIsLoading((prevState) => !prevState);
-      return alert(errorMessage);
+      setErrorMessageAlert(
+        'Url inserida pode ser uma live stream ou video invalido'
+      );
+      return setShowAlert((prevState) => !prevState);
     }
 
     setYoutubeUrl('');
     setIsLoading((prevState) => !prevState);
   }
 
+  function handleCloseAlert() {
+    setErrorMessageAlert('');
+    setShowAlert((prevState) => !prevState);
+  }
+
   return (
     <>
+      {showAlert && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription className="flex justify-between items-center">
+            {errorMessageAlert}
+            <Button onClick={handleCloseAlert}>Ok</Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {isLoading && <Spinner />}
       <form
         className="flex gap-4"
