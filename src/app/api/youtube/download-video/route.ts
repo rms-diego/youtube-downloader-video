@@ -19,6 +19,14 @@ export async function GET(request: NextRequest) {
     `http://www.youtube.com/watch?v=${youtubeVideoId}`
   );
 
+  if (videoInfos.videoDetails && videoInfos.videoDetails.isLiveContent) {
+    const errorResponse = JSON.stringify({
+      message: 'does not suporte live streams',
+    });
+
+    return new NextResponse(errorResponse, { status: 400 });
+  }
+
   const videoOptions: ytdl.chooseFormatOptions = {
     quality: 'highest',
     filter: 'audioandvideo',
